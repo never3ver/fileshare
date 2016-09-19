@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel='stylesheet' href='/bootstrap/dist/css/bootstrap.min.css'
+              type='text/css' media='all'>
+        <link href="/styles.css" rel="stylesheet">
+        <meta charset="UTF-8">
+        <title>Fileshare</title>
+    </head>
+    <body>
+        <div class="container">
+            <nav class="navbar navbar-inverse navbar-fixed-top">
+                <div class="container">
+                    <div class="navbar-header">
+                        <a class="navbar-brand" href="/">Main page</a>
+                    </div>
+                    <div class="navbar-header">
+                        <a class="navbar-brand" href="/list">List of files</a>
+                    </div>
+                    <div id="navbar" class="navbar-collapse collapse">
+                        <form class="navbar-form navbar-right" action="index.php" method="get">
+                            <div class="form-group">
+                                <input type="text" name="search" placeholder="Поиск" class="form-control" autocomplete="on">
+                            </div>
+                            <button type="submit" class="btn btn-success">Найти</button>
+                        </form>
+                    </div>
+                </div>
+            </nav>
+        </div>
+        <div>
+            {% block content %}
+            {% endblock %}
+        </div>
+    </body>
+</html>

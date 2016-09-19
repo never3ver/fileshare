@@ -1,0 +1,24 @@
+{% extends "base.html.twig" %}
+
+{% block content %}
+
+    <table class="table table-bordered table-hover">
+        <tr>
+        <tr><td class="textboldleft">Name</td><td>{{ file.getName()|e }} <br>
+                {% if file.isMedia() %}
+                    Lenght: {{ fileInfo.playtime_string }}, Bitrate: {{ fileInfo.bitrate/1024 }}kbps
+                {% endif %}
+            </td></tr>
+        <tr><td class="textboldleft">Size</td><td>{{ file.getSize()|e }} bytes
+            </td></tr>
+        <tr><td class="textboldleft">Time</td><td>{{ file.getTime()|e }}
+            </td></tr>
+    </table>
+    <div>
+        {% if file.isImage() %}
+            <img class="leftmargin" height="200" src="../files/{{ file.getTmpName() }}">
+        {% endif %}
+    </div>
+    <a href="/download/{{ file.getId() }}" class="btn btn-success leftmargin" download> Download </a>
+
+{% endblock %}

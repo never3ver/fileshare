@@ -1,0 +1,34 @@
+{% extends "base.html.twig" %}
+
+{% block content %}
+
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th class="column">Name</th>
+                <th class="column">Size</th>
+                <th class="column">Data</th>
+                <th class="column"></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for file in files %}
+                <tr>
+                    <td class="cell">
+                        <a href="file/{{ file.getId() }}">  {{ file.getName()|e }}</a>
+                    </td>
+                    <td class="cell">
+                        {{ file.getSize()|e }}
+                    </td>
+                    <td class="cell">
+                        {{ file.getTime()|e }}
+                    </td>
+                    <td class="cell">
+                        <a href="/download/{{ file.getId() }}" class="btn btn-xs btn-success leftmargin" download> Download </a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

@@ -1,0 +1,25 @@
+{
+    "require": {
+        "slim/slim": "^3.5",
+        "twig/twig": "~1.0",
+        "twbs/bootstrap": "^3.3",
+        "slim/php-view": "^2.1",
+        "slim/twig-view": "^2.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "": "app/"
+        }
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "mkdir -p public/bootstrap",
+            "cp -R vendor/twbs/bootstrap/dist/ public/bootstrap/"
+        ],
+        "post-update-cmd": [
+            "mkdir -p public/bootstrap",
+            "cp -R vendor/twbs/bootstrap/dist/ public/bootstrap/"
+        ]
+    }
+
+}
