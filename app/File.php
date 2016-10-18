@@ -6,7 +6,7 @@ class File {
     protected $name;
     protected $tmpName;
     protected $size;
-    protected $time;
+    protected $uploadTime;
     protected $type;
 
     public function getId() {
@@ -22,11 +22,11 @@ class File {
     }
 
     public function getSize() {
-        return $this->size;
+        return round($this->size, 2);
     }
 
-    public function getTime() {
-        return $this->time;
+    public function getUploadTime() {
+        return $this->upoadTime;
     }
 
     public function getType() {
