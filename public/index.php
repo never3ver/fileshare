@@ -73,6 +73,8 @@ $app->get('/download/{id}', function (Request $request, Response $response, $arg
     $dataGateway = new FileDataGateway($this->db);
     $file = $dataGateway->getFile($id);
     $path = "files/{$file->getTmpName()}";
+    $fh = fopen($path, "r");
+    $stream = new \Slim\Http\Stream($fh); // create a stream instance for the response body
     if (file_exists($path)) {
         $response = $response->withHeader('Content-Type', $file->getType());
         $response = $response->withHeader('Content-Description', 'File Transfer');
@@ -82,9 +84,7 @@ $app->get('/download/{id}', function (Request $request, Response $response, $arg
         $response = $response->withHeader('Cache-Control', 'must-revalidate');
         $response = $response->withHeader('Pragma', 'public');
         $response = $response->withHeader('Content-Length', $file->getSize());
-        //readfile($path);
-        $body = $response->getBody();
-        $body->write($file);
+        $response = $response->withBody($stream);
         return $response;
     }
 })->setName('download');
