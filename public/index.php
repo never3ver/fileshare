@@ -50,8 +50,8 @@ $app->post('/', function (Request $request, Response $response) {
             $tmpName = Helper::generateTmpName();
         } while ($dataGateway->isTmpNameExisting($tmpName));
         $file->setTmpName($tmpName);
-        $dataGateway->addFile($file);
         move_uploaded_file($_FILES['uploadfile']['tmp_name'], "files/$tmpName");
+        $dataGateway->addFile($file);
     }
     $response = $this->view->render($response, "upload.html.twig");
     return $response;
@@ -82,7 +82,9 @@ $app->get('/download/{id}', function (Request $request, Response $response, $arg
         $response = $response->withHeader('Cache-Control', 'must-revalidate');
         $response = $response->withHeader('Pragma', 'public');
         $response = $response->withHeader('Content-Length', $file->getSize());
-        readfile($path);
+        //readfile($path);
+        $body = $response->getBody();
+        $body->write($file);
         return $response;
     }
 })->setName('download');

@@ -29,7 +29,7 @@ class FileDataGateway {
     }
 
     public function getAllFiles($limit, $offset) {
-        $sql = "SELECT * FROM fileshare ORDER BY time DESC LIMIT :limit OFFSET :offset";
+        $sql = "SELECT * FROM fileshare ORDER BY uploadTime DESC LIMIT :limit OFFSET :offset";
         $stmt = $this->pdo->prepare($sql);
         $stmt->bindValue(":limit", intval($limit, 10), PDO::PARAM_INT);
         $stmt->bindValue(":offset", intval($offset, 10), PDO::PARAM_INT);

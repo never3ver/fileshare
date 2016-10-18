@@ -26,7 +26,7 @@ class File {
     }
 
     public function getUploadTime() {
-        return $this->upoadTime;
+        return $this->uploadTime;
     }
 
     public function getType() {
