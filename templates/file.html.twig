@@ -16,7 +16,7 @@
     </table>
     <div>
         {% if file.isImage() %}
-            <img class="leftmargin" height="200" src="../files/{{ file.getTmpName() }}">
+            <img class="leftmargin" height="200" src="{{ imagePath }}">
         {% endif %}
     </div>
     <a href="/download/{{ file.getId() }}" class="btn btn-success leftmargin" download> Download </a>
