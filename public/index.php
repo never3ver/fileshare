@@ -50,10 +50,20 @@ $app->post('/', function (Request $request, Response $response) {
         if (move_uploaded_file($_FILES['uploadfile']['tmp_name'], Helper::getFilePath($file->getTmpName()))) {
             $dataGateway->addFile($file);
             $url = $this->router->pathFor('list');
-            return $response->withStatus(302)->withHeader('Location', $url);
+            $response = $response->withStatus(302)->withHeader('Location', $url);
+            return $response;
+        } else {
+            $url = $this->router->pathFor('error');
+            $response = $response->withStatus(302)->withHeader('Location', $url);
+            return $response;
         }
     }
 });
+
+$app->get('/error', function (Request $request, Response $response) {
+    $response = $this->view->render($response, "error.html.twig", ["error" => "Something has gone wrong."]);
+    return $response;
+})->setName('error');
 
 $app->get('/file/{id}', function (Request $request, Response $response, $args) {
     $id = (int) $args['id'];
@@ -87,6 +97,9 @@ $app->get('/download/{id}', function (Request $request, Response $response, $arg
         $response = $response->withHeader('Pragma', 'public');
         $response = $response->withHeader('Content-Length', $file->getSize());
         $response = $response->withBody($stream);
+        return $response;
+    } else {
+        $response = $this->view->render($response, "error.html.twig", ["error" => "No file found"]);
         return $response;
     }
 })->setName('download');
