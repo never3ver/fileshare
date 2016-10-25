@@ -4,14 +4,14 @@
 
     <table class="table table-bordered table-hover">
         <tr>
-        <tr><td class="textboldleft">Name</td><td>{{ file.getName()|e }} <br>
+        <tr><td class="textboldleft">Name</td><td>{{ file.getName() }} <br>
                 {% if file.isMedia() %}
                     Lenght: {{ fileInfo.playtime_string }}, Bitrate: {{ fileInfo.bitrate/1024 }}kbps
                 {% endif %}
             </td></tr>
-        <tr><td class="textboldleft">Size</td><td>{{ file.getSize()|e }} bytes
+        <tr><td class="textboldleft">Size</td><td>{{ file.getSize() }} bytes
             </td></tr>
-        <tr><td class="textboldleft">Time</td><td>{{ file.getUploadTime()|e }}
+        <tr><td class="textboldleft">Time</td><td>{{ file.getUploadTime() }}
             </td></tr>
     </table>
     <div>

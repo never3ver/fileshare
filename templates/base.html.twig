@@ -29,8 +29,10 @@
             </nav>
         </div>
         <div>
-            {% block content %}
-            {% endblock %}
+            {% autoescape %}
+                {% block content %}
+                {% endblock %}
+            {% endautoescape %}
         </div>
     </body>
 </html>

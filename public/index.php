@@ -4,13 +4,7 @@ use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 
 require '../vendor/autoload.php';
-
-$config['displayErrorDetails'] = TRUE;
-$config['db']['host'] = "localhost";
-$config['db']['user'] = "root";
-$config['db']['pass'] = "";
-$config['db']['dbname'] = "test";
-
+require '../config.php';
 
 $app = new \Slim\App(["settings" => $config]);
 $container = $app->getContainer();
@@ -46,15 +40,23 @@ $app->post('/', function (Request $request, Response $response) {
         $file->setName($_FILES['uploadfile']['name']);
         $file->setSize($_FILES['uploadfile']['size']);
         $file->setType($_FILES['uploadfile']['type']);
+
         do {
             $tmpName = Helper::generateTmpName();
         } while ($dataGateway->isTmpNameExisting($tmpName));
+
         $file->setTmpName($tmpName);
-        move_uploaded_file($_FILES['uploadfile']['tmp_name'], "files/$tmpName");
-        $dataGateway->addFile($file);
+
+        if (move_uploaded_file($_FILES['uploadfile']['tmp_name'], "files/$tmpName")) {
+            $dataGateway->addFile($file);
+            $url = $this->router->pathFor('list');
+            return $response->withStatus(302)->withHeader('Location', $url);
+        } else {
+            $error = $_FILES['uploadfile']['error'];
+            $response = $this->view->render($response, "uploadError.html.twig", ["error"=>$error]);
+            return $response;
+        }
     }
-    $response = $this->view->render($response, "upload.html.twig");
-    return $response;
 });
 
 $app->get('/file/{id}', function (Request $request, Response $response, $args) {
@@ -73,8 +75,8 @@ $app->get('/download/{id}', function (Request $request, Response $response, $arg
     $dataGateway = new FileDataGateway($this->db);
     $file = $dataGateway->getFile($id);
     $path = "files/{$file->getTmpName()}";
-    $fh = fopen($path, "r");
-    $stream = new \Slim\Http\Stream($fh); // create a stream instance for the response body
+    $fh = fopen($path, "rb");
+    $stream = new \Slim\Http\Stream($fh); // create a new stream instance for the response body
     if (file_exists($path)) {
         $response = $response->withHeader('Content-Type', $file->getType());
         $response = $response->withHeader('Content-Description', 'File Transfer');

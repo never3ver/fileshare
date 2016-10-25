@@ -15,13 +15,13 @@
             {% for file in files %}
                 <tr>
                     <td class="cell">
-                        <a href="file/{{ file.getId() }}">  {{ file.getName()|e }}</a>
+                        <a href="file/{{ file.getId() }}">  {{ file.getName() }}</a>
                     </td>
                     <td class="cell">
-                        {{ file.getSize()|e }}
+                        {{ file.getSize() }}
                     </td>
                     <td class="cell">
-                        {{ file.getUploadTime()|e }}
+                        {{ file.getUploadTime() }}
                     </td>
                     <td class="cell">
                         <a href="/download/{{ file.getId() }}" class="btn btn-xs btn-success leftmargin" download> Download </a>
