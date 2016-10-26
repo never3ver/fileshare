@@ -27,6 +27,14 @@ $container['view'] = function ($container) {
     return $view;
 };
 
+$container['notFoundHandler'] = function ($c) {
+    return function ($request, $response) use ($c) {
+        return $c->view->render($response, 'error.html.twig')
+                        ->withStatus(404)
+                        ->withHeader('Content-Type', 'text/html');
+    };
+};
+
 // Render Twig template in route
 $app->get('/', function (Request $request, Response $response) {
     $response = $this->view->render($response, "upload.html.twig");
@@ -61,7 +69,8 @@ $app->post('/', function (Request $request, Response $response) {
 });
 
 $app->get('/error', function (Request $request, Response $response) {
-    $response = $this->view->render($response, "error.html.twig", ["error" => "Something has gone wrong."]);
+    $error = "Something has gone wrong.";
+    $response = $this->view->render($response, "error.html.twig", ["error" => $error]);
     return $response;
 })->setName('error');
 
@@ -99,8 +108,9 @@ $app->get('/download/{id}', function (Request $request, Response $response, $arg
         $response = $response->withBody($stream);
         return $response;
     } else {
-        $response = $this->view->render($response, "error.html.twig", ["error" => "No file found"]);
-        return $response;
+        $error = $this->notFoundHandler;
+        return $error($request, $response);
+//        throw new \Slim\Exception\NotFoundException($request, $response);
     }
 })->setName('download');
 
