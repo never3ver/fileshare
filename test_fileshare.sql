@@ -29,8 +29,10 @@ CREATE TABLE `fileshare` (
   `size` int(11) NOT NULL,
   `uploadTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `type` varchar(45) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=utf8;
+  PRIMARY KEY (`id`),
+  KEY `idx_fileshare_tmpName` (`tmpName`),
+  KEY `idx_fileshare_uploadTime` (`uploadTime`)
+) ENGINE=InnoDB AUTO_INCREMENT=62 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -42,4 +44,4 @@ CREATE TABLE `fileshare` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-10-18 13:31:20
+-- Dump completed on 2016-10-27 10:36:52

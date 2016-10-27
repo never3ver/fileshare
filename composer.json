@@ -14,12 +14,10 @@
     },
     "scripts": {
         "post-install-cmd": [
-            "mkdir -p public/bootstrap",
-            "cp -R vendor/twbs/bootstrap/dist/ public/bootstrap/"
+            "php copyBootstrap.php"
         ],
         "post-update-cmd": [
-            "mkdir -p public/bootstrap",
-            "cp -R vendor/twbs/bootstrap/dist/ public/bootstrap/"
+            "php copyBootstrap.php"
         ]
     }
 

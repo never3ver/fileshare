@@ -49,9 +49,13 @@ $app->post('/', function (Request $request, Response $response) {
         $file->setSize($_FILES['uploadfile']['size']);
         $file->setType($_FILES['uploadfile']['type']);
 
-        do {
-            $tmpName = Helper::generateTmpName();
-        } while ($dataGateway->isTmpNameExisting($tmpName));
+        $tmpName = Helper::createTmpName($dataGateway);
+
+        if ($dataGateway->isTmpNameExisting($tmpName)) {
+            $url = $this->router->pathFor('error');
+            $response = $response->withStatus(302)->withHeader('Location', $url);
+            return $response;
+        }
 
         $file->setTmpName($tmpName);
 
@@ -69,8 +73,7 @@ $app->post('/', function (Request $request, Response $response) {
 });
 
 $app->get('/error', function (Request $request, Response $response) {
-    $error = "Something has gone wrong.";
-    $response = $this->view->render($response, "error.html.twig", ["error" => $error]);
+    $response = $this->view->render($response, "error.html.twig");
     return $response;
 })->setName('error');
 
