@@ -6,12 +6,12 @@
         <tr>
         <tr><td class="textboldleft">Name</td><td>{{ file.getName() }} <br>
                 {% if file.isMedia() %}
-                    Lenght: {{ fileInfo.playtime_string }}, Bitrate: {{ fileInfo.bitrate/1024 }}kbps
+                    Length: {{ data.playtime_string }}, Bitrate: {{ data.bitrate/1024 }}kbps
                 {% endif %}
             </td></tr>
-        <tr><td class="textboldleft">Size</td><td>{{ file.getSize() }} bytes
+        <tr><td class="textboldleft">Size</td><td>{{ size }} KB
             </td></tr>
-        <tr><td class="textboldleft">Time</td><td>{{ file.getUploadTime() }}
+        <tr><td class="textboldleft">Date of upload</td><td>{{ file.getUploadTime() }}
             </td></tr>
     </table>
     <div>

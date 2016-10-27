@@ -81,14 +81,9 @@ $app->get('/file/{id}', function (Request $request, Response $response, $args) {
     $id = (int) $args['id'];
     $dataGateway = new FileDataGateway($this->db);
     $file = $dataGateway->getFile($id);
-    $getId3 = new getID3();
-    $fileInfo = $getId3->Analyze(Helper::getFilePath($file->getTmpName()));
-    if ($file->isImage()) {
-        $imagePath = Helper::getImagePath($file->getTmpName());
-        $response = $this->view->render($response, "file.html.twig", ["file" => $file, "fileInfo" => $fileInfo, "imagePath" => $imagePath]);
-        return $response;
-    }
-    $response = $this->view->render($response, "file.html.twig", ["file" => $file, "fileInfo" => $fileInfo]);
+    $fileInfo = new FileInfo($file);
+    $data = $fileInfo->getDataForTemplate();
+    $response = $response = $this->view->render($response, "file.html.twig", $data);
     return $response;
 })->setName('file');
 

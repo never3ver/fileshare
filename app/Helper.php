@@ -31,4 +31,8 @@ class Helper {
         return "files/" . $tmpName;
     }
 
+    public static function convertBytesToKilobytes($sizeInB) {
+        return round($sizeInB / 1024, 2);
+    }
+
 }
