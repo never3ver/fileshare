@@ -92,8 +92,8 @@ $app->get('/download/{id}', function (Request $request, Response $response, $arg
     $dataGateway = new FileDataGateway($this->db);
     $file = $dataGateway->getFile($id);
     $path = Helper::getFilePath($file->getTmpName());
-//    universal way to download using php:
-//    
+//    //universal way to download using php:
+//
 //    if (is_readable($path)) {
 //        $fh = fopen($path, "rb");
 //        $stream = new \Slim\Http\Stream($fh); // create a new stream instance for the response body
@@ -110,7 +110,7 @@ $app->get('/download/{id}', function (Request $request, Response $response, $arg
 //    } else {
 //        $error = $this->notFoundHandler;
 //        return $error($request, $response);
-////        throw new \Slim\Exception\NotFoundException($request, $response);
+//        //        throw new \Slim\Exception\NotFoundException($request, $response);
 //    }
 //    download using xsendfile apache module:
     if (file_exists($path)) {
