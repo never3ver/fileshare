@@ -6,7 +6,7 @@
         <tr>
         <tr><td class="textboldleft">Name</td><td>{{ file.getName() }} <br>
                 {% if file.isMedia() %}
-                    Length: {{ data.playtime_string }}, Bitrate: {{ data.bitrate/1024 }}kbps
+                    Length: {{ length }}, Bitrate: {{ bitrate/1024 }}kbps
                 {% endif %}
             </td></tr>
         <tr><td class="textboldleft">Size</td><td>{{ size }} KB

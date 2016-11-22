@@ -1,3 +1,8 @@
 vendor/*
 nbproject/*
 /public/files/
+/phpunit-skelgen.phar
+/phpunit.phar
+/app/Calculator.php
+/tests/app/ConnectionTest.php
+/tests/app/2ConnectionTest.php

@@ -82,25 +82,4 @@ class File {
         return FALSE;
     }
 
-    public function isCompressed() {
-        $mimeTypes = ["image/gif",
-            "image/jpeg",
-            "image/png",
-            "audio/aac",
-            "audio/mp3",
-            "audio/mp4",
-            "audio/mpeg",
-            "audio/ogg",
-            "audio/wav",
-            "audio/webm",
-            "video/mp4",
-            "video/ogg",
-            "video/webm",
-            "video/avi"];
-        if (in_array($this->type, $mediaMimeTypes)) {
-            return TRUE;
-        }
-        return FALSE;
-    }
-
 }

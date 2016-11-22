@@ -1,14 +1,14 @@
 <?php
 
-function recurse_copy($src, $dst) {
-    $dir = opendir($src);
-    @mkdir($dst);
+function recurse_copy($source, $destination) {
+    $dir = opendir($source);
+    @mkdir($destination);
     while (false !== ( $file = readdir($dir))) {
         if (( $file != '.' ) && ( $file != '..' )) {
-            if (is_dir($src . '/' . $file)) {
-                recurse_copy($src . '/' . $file, $dst . '/' . $file);
+            if (is_dir($source . '/' . $file)) {
+                recurse_copy($source . '/' . $file, $destination . '/' . $file);
             } else {
-                copy($src . '/' . $file, $dst . '/' . $file);
+                copy($source . '/' . $file, $destination . '/' . $file);
             }
         }
     }

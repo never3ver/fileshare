@@ -58,4 +58,11 @@ class FileDataGateway {
         return FALSE;
     }
 
+    public function deleteFile($id) {
+        $sql = "DELETE FROM fileshare WHERE id = :id";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindValue(":id", intval($id, 10), PDO::PARAM_INT);
+        $stmt->execute();
+    }
+
 }

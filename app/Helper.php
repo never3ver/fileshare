@@ -2,7 +2,7 @@
 
 class Helper {
 
-    protected function generateTmpName() {
+    protected static function generateTmpName() {
         $result = null;
         $source = str_split('abcdefghijklmnopqrstuvwxyz'
                 . 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
