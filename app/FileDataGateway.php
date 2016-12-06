@@ -65,4 +65,25 @@ class FileDataGateway {
         $stmt->execute();
     }
 
+    public function search($query) {
+        $sql = "SELECT * FROM fileshare WHERE `name` LIKE :query";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindValue(":query", "%" . $query . "%");
+        $stmt->execute();
+        $stmt->setFetchMode(PDO::FETCH_CLASS, 'File');
+        $files = $stmt->fetchAll();
+        return $files;
+    }
+
+    public function searchWithSphinx($query) {
+        $query = trim(strval($query));
+        $pdo = new PDO("mysql:host=127.0.0.1;port=9306");
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $sql = "SELECT * FROM idx_fileshare_name WHERE MATCH ('{$query}')";
+        $stmt = $pdo->query($sql);
+        $stmt->execute();
+        $files = $stmt->fetchAll();
+        return $files;
+    }
+
 }

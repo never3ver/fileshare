@@ -27,13 +27,13 @@ $container['view'] = function ($container) {
     return $view;
 };
 
-$container['notFoundHandler'] = function ($c) {
-    return function ($request, $response) use ($c) {
-        return $c->view->render($response, 'error.html.twig')
-                        ->withStatus(404)
-                        ->withHeader('Content-Type', 'text/html');
-    };
-};
+/* $container['notFoundHandler'] = function ($c) {
+  return function ($request, $response) use ($c) {
+  return $c->view->render($response, 'error.html.twig')
+  ->withStatus(404)
+  ->withHeader('Content-Type', 'text/html');
+  };
+  }; */
 
 // Render Twig template in route
 $app->get('/', function (Request $request, Response $response) {
@@ -73,8 +73,9 @@ $app->post('/', function (Request $request, Response $response) {
 });
 
 $app->get('/error', function (Request $request, Response $response) {
-    $response = $this->view->render($response, "error.html.twig");
-    return $response;
+//    $response = $this->view->render($response, "error.html.twig");
+    throw new \Slim\Exception\NotFoundException($request, $response);
+//    return $response;
 })->setName('error');
 
 $app->get('/file/{id}', function (Request $request, Response $response, $args) {
@@ -92,7 +93,8 @@ $app->get('/download/{id}', function (Request $request, Response $response, $arg
     $dataGateway = new FileDataGateway($this->db);
     $file = $dataGateway->getFile($id);
     $path = Helper::getFilePath($file->getTmpName());
-    //universal way to download using php:
+    
+//universal way to download using php:
 
     if (is_readable($path)) {
         $fh = fopen($path, "rb");
@@ -112,6 +114,7 @@ $app->get('/download/{id}', function (Request $request, Response $response, $arg
         return $error($request, $response);
         //        throw new \Slim\Exception\NotFoundException($request, $response);
     }
+
 ////    download using xsendfile apache module:
 //    if (file_exists($path)) {
 //        $response = $response->withHeader('X-SendFile', realpath($path));
@@ -120,6 +123,15 @@ $app->get('/download/{id}', function (Request $request, Response $response, $arg
 //        return $response;
 //    }
 })->setName('download');
+
+$app->get('/search', function (Request $request, Response $response, $args) {
+    $query = $request->getQueryParam('query');
+    $dataGateway = new FileDataGateway($this->db);
+    $files = $dataGateway->searchWithSphinx($query);
+//    $files = $dataGateway->search($query);
+    $response = $this->view->render($response, "search.html.twig", ["files" => $files]);
+    return $response;
+})->setName('search');
 
 $app->get('/list', function (Request $request, Response $response) {
     $dataGateway = new FileDataGateway($this->db);
