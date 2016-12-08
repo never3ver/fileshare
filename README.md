@@ -9,4 +9,4 @@ To run this app you will need:
 4. Apache web server, DocumentRoot folder must be set to /public.
 5. Composer.
 6. Xsendfile module for apache.
-
+7. Sphinx, change paths in sphinx.conf

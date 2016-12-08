@@ -30,6 +30,7 @@ CREATE TABLE `fileshare` (
   `uploadTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `type` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`),
+  KEY `idx_fileshare_name` (`name`),
   KEY `idx_fileshare_tmpName` (`tmpName`),
   KEY `idx_fileshare_uploadTime` (`uploadTime`)
 ) ENGINE=InnoDB AUTO_INCREMENT=62 DEFAULT CHARSET=utf8;
