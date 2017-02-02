@@ -50,21 +50,25 @@ $app->get('/', function (Request $request, Response $response) {
 $app->post('/', function (Request $request, Response $response) {
     if ($_FILES) {
         $file = new File();
-        $file->setName($_FILES['uploadfile']['name']);
-        $file->setSize($_FILES['uploadfile']['size']);
-        $file->setType($_FILES['uploadfile']['type']);
+        $files = $request->getUploadedFiles();
+        $uploadedFile = $files['uploadfile'];
+        $file->setName($uploadedFile->getClientFilename());
+        $file->setSize($uploadedFile->getSize());
+        $file->setType($uploadedFile->getClientMediaType());
 
         $tmpName = $this->FileDataGateway->createTmpName();
 
         if ($this->FileDataGateway->isTmpNameExisting($tmpName)) {
-            $url = $this->router->pathFor('error');
-            $response = $response->withStatus(302)->withHeader('Location', $url);
+            /* $url = $this->router->pathFor('error');
+              $response = $response->withStatus(302)->withHeader('Location', $url); */
+            $response = $this->view->render($response, 'error.html.twig');
             return $response;
         }
 
         $file->setTmpName($tmpName);
 
-        if (move_uploaded_file($_FILES['uploadfile']['tmp_name'], Helper::getFilePath($file->getTmpName()))) {
+        $uploadedFile->moveTo(Helper::getFilePath($file->getTmpName()));
+        if (is_readable(Helper::getFilePath($file->getTmpName()))) {
             if ($file->isMedia()) {
                 $fileInfo = new FileInfo($file);
                 $json = $fileInfo->getJson();
@@ -87,7 +91,6 @@ $app->get('/error', function (Request $request, Response $response) {
 //    $response = $this->view->render($response, 'error.html.twig');
 //    return $response;
     throw new \Slim\Exception\NotFoundException($request, $response);
-
 })->setName('error');
 
 $app->get('/file/{id}', function (Request $request, Response $response, $args) {
