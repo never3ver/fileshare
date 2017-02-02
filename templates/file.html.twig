@@ -2,11 +2,11 @@
 
 {% block content %}
 
-    <table class="table table-bordered table-hover">
+    <table class="table tablecustom table-bordered table-hover">
         <tr>
         <tr><td class="textboldleft">Name</td><td>{{ file.getName() }} <br>
                 {% if file.isMedia() %}
-                    Length: {{ fileInfo.getPlaytime() }}, Bitrate: {{ fileInfo.getBitrate()/1024 }} kbps
+                    Length: {{ fileInfo.getPlaytime() }}, Bitrate: {{ fileInfo.getBitrate()/1024 }} Kb/s
                 {% endif %}
             </td></tr>
         <tr><td class="textboldleft">Size</td><td>{{ fileInfo.getSize() }} KB

@@ -85,8 +85,9 @@ $app->post('/', function (Request $request, Response $response) {
 
 $app->get('/error', function (Request $request, Response $response) {
 //    $response = $this->view->render($response, 'error.html.twig');
-    throw new \Slim\Exception\NotFoundException($request, $response);
 //    return $response;
+    throw new \Slim\Exception\NotFoundException($request, $response);
+
 })->setName('error');
 
 $app->get('/file/{id}', function (Request $request, Response $response, $args) {
@@ -139,7 +140,6 @@ $app->get('/download/{id}', function (Request $request, Response $response, $arg
 $app->get('/search', function (Request $request, Response $response, $args) {
     $query = $request->getQueryParam('query');
     $files = $this->FileDataGateway->searchWithSphinx($query);
-//    $files = $this->FileDataGateway->search($query);
     $response = $this->view->render($response, 'search.html.twig', ['files' => $files, 'query' => $query]);
     return $response;
 })->setName('search');

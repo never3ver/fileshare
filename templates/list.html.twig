@@ -2,7 +2,7 @@
 
 {% block content %}
 
-    <table class="table table-bordered table-hover">
+    <table class="table tablecustom table-bordered table-hover">
         <thead>
             <tr>
                 <th class="column">Name</th>
@@ -18,7 +18,7 @@
                         <a href="file/{{ file.getId() }}">  {{ file.getName() }}</a>
                     </td>
                     <td class="cell">
-                        {{ file.getSize() }}
+                        {{ file.getSize() }} KB
                     </td>
                     <td class="cell">
                         {{ file.getUploadTime() }}

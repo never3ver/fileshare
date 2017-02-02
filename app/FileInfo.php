@@ -27,7 +27,7 @@ class FileInfo {
         $getID3 = new getID3();
         $properties = $getID3->analyze(Helper::getFilePath($this->file->getTmpName()));
         $this->playtime = $properties['playtime_string'];
-        $this->bitrate = $properties['bitrate'];
+        $this->bitrate = round($properties['bitrate'], 2);
         $json = ['playtime' => $this->playtime, 'bitrate' => $this->bitrate];
         $json = json_encode($json);
         $this->json = $json;
