@@ -24,11 +24,12 @@ DROP TABLE IF EXISTS `fileshare`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `fileshare` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(45) DEFAULT NULL,
-  `tmpName` varchar(45) DEFAULT NULL,
+  `name` varchar(45) DEFAULT NULL COMMENT 'original name of file',
+  `tmpName` varchar(45) DEFAULT NULL COMMENT 'internally generated name of file',
   `size` int(11) NOT NULL,
   `uploadTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `type` varchar(45) DEFAULT NULL,
+  `type` varchar(45) DEFAULT NULL COMMEMT 'mime type of file',
+  `json` varchar(128) DEFAULT NULL COMMENT 'json encoded string of media properties',
   PRIMARY KEY (`id`),
   KEY `idx_fileshare_name` (`name`),
   KEY `idx_fileshare_tmpName` (`tmpName`),

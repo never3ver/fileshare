@@ -2,7 +2,7 @@
 
 class Helper {
 
-    protected static function generateTmpName() {
+    public static function generateTmpName() {
         $result = null;
         $source = str_split('abcdefghijklmnopqrstuvwxyz'
                 . 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
@@ -14,21 +14,12 @@ class Helper {
         return $result;
     }
 
-    public static function createTmpName($dataGateway) {
-        for ($i = 0; $i < 1000; $i++) {
-            do {
-                $tmpName = self::generateTmpName();
-            } while ($dataGateway->isTmpNameExisting($tmpName));
-        }
-        return $tmpName;
-    }
-
-    public static function getImagePath($tmpName) {
+    public static function getImageUrl($tmpName) {
         return "../files/" . $tmpName;
     }
 
     public static function getFilePath($tmpName) {
-        return "files/" . $tmpName;
+        return __DIR__ . "/../public/files/" . $tmpName;
     }
 
     public static function convertBytesToKilobytes($sizeInB) {

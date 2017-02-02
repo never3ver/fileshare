@@ -8,6 +8,7 @@ class File {
     protected $size;
     protected $uploadTime;
     protected $type;
+    protected $json;
 
     public function getId() {
         return $this->id;
@@ -33,6 +34,10 @@ class File {
         return $this->type;
     }
 
+    public function getJson() {
+        return $this->json;
+    }
+
     public function setName($name) {
         $this->name = $name;
     }
@@ -47,6 +52,10 @@ class File {
 
     public function setType($type) {
         $this->type = $type;
+    }
+
+    public function setJson($json) {
+        $this->json = $json;
     }
 
     public function isImage() {

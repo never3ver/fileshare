@@ -6,17 +6,17 @@
         <tr>
         <tr><td class="textboldleft">Name</td><td>{{ file.getName() }} <br>
                 {% if file.isMedia() %}
-                    Length: {{ length }}, Bitrate: {{ bitrate/1024 }}kbps
+                    Length: {{ fileInfo.getPlaytime() }}, Bitrate: {{ fileInfo.getBitrate()/1024 }} kbps
                 {% endif %}
             </td></tr>
-        <tr><td class="textboldleft">Size</td><td>{{ size }} KB
+        <tr><td class="textboldleft">Size</td><td>{{ fileInfo.getSize() }} KB
             </td></tr>
         <tr><td class="textboldleft">Date of upload</td><td>{{ file.getUploadTime() }}
             </td></tr>
     </table>
     <div>
         {% if file.isImage() %}
-            <img class="leftmargin" height="200" src="{{ imagePath }}">
+            <img class="leftmargin" height="200" src="{{ fileInfo.getImageUrl() }}">
         {% endif %}
     </div>
     <a href="/download/{{ file.getId() }}" class="btn btn-success leftmargin"> Download </a>

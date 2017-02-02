@@ -9,13 +9,21 @@ class FileDataGateway {
     }
 
     public function addFile(File $file) {
-        $sql = "INSERT INTO fileshare (`name`, `tmpname`, `size`, `type`)"
-                . " VALUES (:name, :tmpname, :size, :type)";
+        if ($file->getJson() != '') {
+            $sql = "INSERT INTO fileshare (`name`, `tmpname`, `size`, `type`, `json`)"
+                    . " VALUES (:name, :tmpname, :size, :type, :json)";
+        } else {
+            $sql = "INSERT INTO fileshare (`name`, `tmpname`, `size`, `type`)"
+                    . " VALUES (:name, :tmpname, :size, :type)";
+        }
         $stmt = $this->pdo->prepare($sql);
         $stmt->bindValue(":name", $file->getName());
         $stmt->bindValue(":tmpname", $file->getTmpName());
         $stmt->bindValue(":size", $file->getSize());
         $stmt->bindValue(":type", $file->getType());
+        if ($file->getJson() != '') {
+            $stmt->bindValue(":json", $file->getJson());
+        }
         $stmt->execute();
     }
 
@@ -58,6 +66,15 @@ class FileDataGateway {
         return FALSE;
     }
 
+    public function createTmpName() {
+        for ($i = 0; $i < 20; $i++) {
+            do {
+                $tmpName = Helper::generateTmpName();
+            } while ($this->isTmpNameExisting($tmpName));
+        }
+        return $tmpName;
+    }
+
     public function deleteFile($id) {
         $sql = "DELETE FROM fileshare WHERE id = :id";
         $stmt = $this->pdo->prepare($sql);
@@ -79,8 +96,9 @@ class FileDataGateway {
         $query = trim(strval($query));
         $pdo = new PDO("mysql:host=127.0.0.1;port=9306");
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $sql = "SELECT * FROM idx_fileshare_name WHERE MATCH ('{$query}')";
-        $stmt = $pdo->query($sql);
+        $sql = "SELECT * FROM idx_fileshare_name WHERE MATCH (:query)";
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindValue(":query", $query);
         $stmt->execute();
         $files = $stmt->fetchAll();
         return $files;
