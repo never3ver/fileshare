@@ -23,7 +23,7 @@ class File {
     }
 
     public function getSize() {
-        return round($this->size, 2);
+        return round($this->size/1024, 2);
     }
 
     public function getUploadTime() {

@@ -68,6 +68,7 @@ $app->post('/', function (Request $request, Response $response) {
         $file->setTmpName($tmpName);
 
         $uploadedFile->moveTo(Helper::getFilePath($file->getTmpName()));
+        
         if (is_readable(Helper::getFilePath($file->getTmpName()))) {
             if ($file->isMedia()) {
                 $fileInfo = new FileInfo($file);
