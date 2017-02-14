@@ -9,16 +9,16 @@
                     Length: {{ fileInfo.getPlaytime() }}, Bitrate: {{ fileInfo.getBitrate() }} kb/s
                 {% endif %}
             </td></tr>
-        <tr><td class="textboldleft">Size</td><td>{{ fileInfo.getSize() }} kB
+        <tr><td class="textboldleft">Size</td><td>{{ file.getSizeInKb() }} kB
             </td></tr>
         <tr><td class="textboldleft">Date of upload</td><td>{{ file.getUploadTime() }}
             </td></tr>
     </table>
     <div>
         {% if file.isImage() %}
-            <img class="leftmargin" height="200" src="{{ fileInfo.getImageUrl() }}">
+            {#            <img class="leftmargin" height="200" src="{{ fileInfo.getImageUrl() }}">#}
+            <img class="leftmargin" src="{{ fileInfo.getPreview() }}">
         {% endif %}
     </div>
     <a href="/download/{{ file.getId() }}" class="btn btn-success leftmargin"> Download </a>
-
 {% endblock %}

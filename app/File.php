@@ -23,7 +23,11 @@ class File {
     }
 
     public function getSize() {
-        return round($this->size/1024, 2);
+        return $this->size;
+    }
+
+    public function getSizeInKb() {
+        return round($this->size / 1024, 2);
     }
 
     public function getUploadTime() {
@@ -63,7 +67,6 @@ class File {
             "image/gif",
             "image/jpeg",
             "image/png",
-            "image/bmp"
         ];
         if (in_array($this->type, $imageMimeTypes)) {
             return TRUE;

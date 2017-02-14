@@ -15,15 +15,21 @@ class Helper {
     }
 
     public static function getImageUrl($tmpName) {
-        return "../files/" . $tmpName;
+        return '../files/' . $tmpName;
     }
 
     public static function getFilePath($tmpName) {
-        return __DIR__ . "/../public/files/" . $tmpName;
+//        return dirname(__DIR__) . "/public/files/" . $tmpName;
+        return '../public/files/' . $tmpName;
     }
 
-    public static function convertBytesToKilobytes($sizeInB) {
-        return round($sizeInB / 1024, 2);
+    public static function getImagePreviewPath($tmpName) {
+//        return __DIR__ . "/public/files/preview/" . $tmpName;
+        return '../public/files/preview/' . $tmpName;
+    }
+
+    public static function getImagePreviewUrl($tmpName) {
+        return '../files/preview/' . $tmpName;
     }
 
 }

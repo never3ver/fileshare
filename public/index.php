@@ -68,7 +68,7 @@ $app->post('/', function (Request $request, Response $response) {
         $file->setTmpName($tmpName);
 
         $uploadedFile->moveTo(Helper::getFilePath($file->getTmpName()));
-        
+
         if (is_readable(Helper::getFilePath($file->getTmpName()))) {
             if ($file->isMedia()) {
                 $fileInfo = new FileInfo($file);
@@ -111,9 +111,15 @@ $app->get('/download/{id}', function (Request $request, Response $response, $arg
     $file = $this->FileDataGateway->getFile($id);
     $path = Helper::getFilePath($file->getTmpName());
 
-//universal way to download using php:
-
     if (is_readable($path)) {
+        if (in_array('xmod_xsendfile', apache_get_modules())) {
+            //download using xsendfile apache module:
+            $response = $response->withHeader('X-SendFile', $path);
+            $response = $response->withHeader('Content-Type', $file->getType());
+            $response = $response->withHeader('Content-Disposition', 'attachment; filename=' . $file->getName());
+            return $response;
+        } else {
+        //universal way to download using php:
         $fh = fopen($path, 'rb');
         $stream = new \Slim\Http\Stream($fh); // create a new stream instance for the response body
         $response = $response->withHeader('Content-Type', $file->getType());
@@ -126,19 +132,12 @@ $app->get('/download/{id}', function (Request $request, Response $response, $arg
         $response = $response->withHeader('Content-Length', $file->getSize());
         $response = $response->withBody($stream);
         return $response;
+        }
     } else {
 //        $error = $this->notFoundHandler;
 //        return $error($request, $response);
         throw new \Slim\Exception\NotFoundException($request, $response);
     }
-
-////    download using xsendfile apache module:
-//    if (file_exists($path)) {
-//        $response = $response->withHeader('X-SendFile', realpath($path));
-//        $response = $response->withHeader('Content-Type', $file->getType());
-//        $response = $response->withHeader('Content-Disposition', 'attachment; filename=' . $file->getName());
-//        return $response;
-//    }
 })->setName('download');
 
 $app->get('/search', function (Request $request, Response $response, $args) {
