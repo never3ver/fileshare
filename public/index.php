@@ -59,8 +59,6 @@ $app->post('/', function (Request $request, Response $response) {
         $tmpName = $this->FileDataGateway->createTmpName();
 
         if ($this->FileDataGateway->isTmpNameExisting($tmpName)) {
-            /* $url = $this->router->pathFor('error');
-              $response = $response->withStatus(302)->withHeader('Location', $url); */
             $response = $this->view->render($response, 'error.html.twig');
             return $response;
         }
@@ -86,19 +84,10 @@ $app->post('/', function (Request $request, Response $response) {
             $response = $response->withStatus(302)->withHeader('Location', $url);
             return $response;
         } else {
-            /* $url = $this->router->pathFor('error');
-              $response = $response->withStatus(302)->withHeader('Location', $url);
-              return $response; */
             throw new \Slim\Exception\NotFoundException($request, $response);
         }
     }
 });
-
-$app->get('/error', function (Request $request, Response $response) {
-//    $response = $this->view->render($response, 'error.html.twig');
-//    return $response;
-    throw new \Slim\Exception\NotFoundException($request, $response);
-})->setName('error');
 
 $app->get('/file/{id}', function (Request $request, Response $response, $args) {
     $id = (int) $args['id'];
@@ -140,8 +129,6 @@ $app->get('/download/{id}', function (Request $request, Response $response, $arg
             return $response;
         }
     } else {
-//        $error = $this->notFoundHandler;
-//        return $error($request, $response);
         throw new \Slim\Exception\NotFoundException($request, $response);
     }
 })->setName('download');

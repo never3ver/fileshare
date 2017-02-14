@@ -25,7 +25,7 @@ DROP TABLE IF EXISTS `fileshare`;
 CREATE TABLE `fileshare` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(45) DEFAULT NULL COMMENT 'original name of file',
-  `tmpName` varchar(45) DEFAULT NULL COMMENT 'internally generated name of file',
+  `tmpName` varchar(56) DEFAULT NULL COMMENT 'artificially generated name of file',
   `size` int(11) NOT NULL,
   `uploadTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `type` varchar(45) DEFAULT NULL COMMEMT 'mime type of file',
