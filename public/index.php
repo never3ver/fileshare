@@ -65,7 +65,13 @@ $app->post('/', function (Request $request, Response $response) {
             return $response;
         }
 
+        $datePath = date('Y-m-d') . '/';
+        $tmpName = $datePath . $tmpName;
         $file->setTmpName($tmpName);
+
+        if (!is_dir(Helper::getFilePath('') . $datePath)) {
+            mkdir(Helper::getFilePath('') . $datePath);
+        }
 
         $uploadedFile->moveTo(Helper::getFilePath($file->getTmpName()));
 
@@ -119,19 +125,19 @@ $app->get('/download/{id}', function (Request $request, Response $response, $arg
             $response = $response->withHeader('Content-Disposition', 'attachment; filename=' . $file->getName());
             return $response;
         } else {
-        //universal way to download using php:
-        $fh = fopen($path, 'rb');
-        $stream = new \Slim\Http\Stream($fh); // create a new stream instance for the response body
-        $response = $response->withHeader('Content-Type', $file->getType());
-        $response = $response->withHeader('Content-Description', 'File Transfer');
-        $response = $response->withHeader('Content-Disposition', 'attachment; filename=' . $file->getName());
-        $response = $response->withHeader('Content-Transfer-Encoding', 'binary');
-        $response = $response->withHeader('Expires', '0');
-        $response = $response->withHeader('Cache-Control', 'must-revalidate');
-        $response = $response->withHeader('Pragma', 'public');
-        $response = $response->withHeader('Content-Length', $file->getSize());
-        $response = $response->withBody($stream);
-        return $response;
+            //universal way to download using php:
+            $fh = fopen($path, 'rb');
+            $stream = new \Slim\Http\Stream($fh); // create a new stream instance for the response body
+            $response = $response->withHeader('Content-Type', $file->getType());
+            $response = $response->withHeader('Content-Description', 'File Transfer');
+            $response = $response->withHeader('Content-Disposition', 'attachment; filename=' . $file->getName());
+            $response = $response->withHeader('Content-Transfer-Encoding', 'binary');
+            $response = $response->withHeader('Expires', '0');
+            $response = $response->withHeader('Cache-Control', 'must-revalidate');
+            $response = $response->withHeader('Pragma', 'public');
+            $response = $response->withHeader('Content-Length', $file->getSize());
+            $response = $response->withBody($stream);
+            return $response;
         }
     } else {
 //        $error = $this->notFoundHandler;

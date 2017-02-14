@@ -13,8 +13,8 @@ class FileInfo {
         $this->file = $file;
         $this->filePath = Helper::getFilePath($this->file->getTmpName());
         if ($file->isImage()) {
-            $this->imageUrl = Helper::getImageUrl($file->getTmpName());
-        } elseif ($file->getJson() != '' && $file->isMedia()) {
+            $this->imageUrl = Helper::getImageUrl($this->file->getTmpName());
+        } elseif ($file->getJson() != '' && $this->file->isMedia()) {
             $json = json_decode($file->getJson(), true);
             $this->playtime = $json['playtime'];
             $this->bitrate = $json['bitrate'];
@@ -53,6 +53,14 @@ class FileInfo {
         return $this->json;
     }
 
+    protected function makePreviewDir() {
+        $datePath = date('Y-m-d') . '/';
+        if (!is_dir(Helper::getImagePreviewPath('') . $datePath)) {
+            $tmpName = $datePath . $this->file->getTmpName();
+            mkdir(Helper::getImagePreviewPath('') . $datePath);
+        }
+    }
+
     public function getPreview() {
         $size = getimagesize($this->filePath);
         $width = $size[0];
@@ -75,6 +83,7 @@ class FileInfo {
                 imagealphablending($preview, FALSE);
                 imagesavealpha($preview, TRUE);
                 imagecopyresampled($preview, $source, 0, 0, 0, 0, $previewWidth, $previewHeight, $width, $height);
+                $this->makePreviewDir();
                 imagegif($preview, Helper::getImagePreviewPath($this->file->getTmpName()));
                 return Helper::getImagePreviewUrl($this->file->getTmpName());
             case 'image/jpeg':
@@ -83,6 +92,7 @@ class FileInfo {
                 imagealphablending($preview, false);
                 imagesavealpha($preview, true);
                 imagecopyresampled($preview, $source, 0, 0, 0, 0, $previewWidth, $previewHeight, $width, $height);
+                $this->makePreviewDir();
                 imagejpeg($preview, Helper::getImagePreviewPath($this->file->getTmpName()));
                 return Helper::getImagePreviewUrl($this->file->getTmpName());
             case 'image/png':
@@ -92,6 +102,7 @@ class FileInfo {
                 imagealphablending($preview, FALSE);
                 imagesavealpha($preview, TRUE);
                 imagecopyresampled($preview, $source, 0, 0, 0, 0, $previewWidth, $previewHeight, $width, $height);
+                $this->makePreviewDir();
                 imagepng($preview, Helper::getImagePreviewPath($this->file->getTmpName()));
                 return Helper::getImagePreviewUrl($this->file->getTmpName());
         }
