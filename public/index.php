@@ -92,6 +92,7 @@ $app->post('/', function (Request $request, Response $response) {
 $app->get('/file/{id}', function (Request $request, Response $response, $args) {
     $id = (int) $args['id'];
     $file = $this->FileDataGateway->getFile($id);
+
     if (file_exists(Helper::getFilePath($file->getTmpName()))) {
         $fileInfo = new FileInfo($file);
         $response = $this->view->render($response, 'file.html.twig', ['file' => $file, 'fileInfo' => $fileInfo]);
