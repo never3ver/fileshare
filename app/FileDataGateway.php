@@ -92,16 +92,4 @@ class FileDataGateway {
         return $files;
     }
 
-    public function searchWithSphinx($query) {
-        $query = trim(strval($query));
-        $pdo = new PDO("mysql:host=127.0.0.1;port=9306");
-        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $sql = "SELECT * FROM idx_fileshare_name WHERE MATCH (:query)";
-        $stmt = $pdo->prepare($sql);
-        $stmt->bindValue(":query", $query);
-        $stmt->execute();
-        $files = $stmt->fetchAll();
-        return $files;
-    }
-
 }

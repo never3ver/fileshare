@@ -18,6 +18,13 @@ $container['db'] = function ($c) {
     return $pdo;
 };
 
+$container['sphinxdb'] = function ($c) {
+    $db = $c['settings']['db'];
+    $pdo = new PDO('mysql:host=' . $db['sphinx_host']);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    return $pdo;
+};
+
 // Register component on container
 $container['view'] = function ($container) {
     $view = new \Slim\Views\Twig('../templates');
@@ -31,6 +38,11 @@ $container['view'] = function ($container) {
 $container['FileDataGateway'] = function ($c) {
     $dataGateway = new FileDataGateway($c['db']);
     return $dataGateway;
+};
+
+$container['sphinx'] = function ($c) {
+    $sphinx = new Sphinx($c['sphinxdb']);
+    return $sphinx;
 };
 
 /* $container['notFoundHandler'] = function ($c) {
@@ -136,7 +148,7 @@ $app->get('/download/{id}', function (Request $request, Response $response, $arg
 
 $app->get('/search', function (Request $request, Response $response, $args) {
     $query = $request->getQueryParam('query');
-    $files = $this->FileDataGateway->searchWithSphinx($query);
+    $files = $this->sphinx->searchBySphinx($query);
     $response = $this->view->render($response, 'search.html.twig', ['files' => $files, 'query' => $query]);
     return $response;
 })->setName('search');

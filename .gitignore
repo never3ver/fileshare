@@ -7,5 +7,4 @@ nbproject/*
 /tests/app/ConnectionTest.php
 /tests/app/2ConnectionTest.php
 /index/
-/sphinx.conf
 /public/temp.php
