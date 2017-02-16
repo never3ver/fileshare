@@ -94,4 +94,12 @@ class File {
         return FALSE;
     }
 
+    public function getFilePageLink() {
+        return 'file/' . $this->id;
+    }
+
+    public function getDownloadLink() {
+        return '../download/' . $this->id;
+    }
+
 }
