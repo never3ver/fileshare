@@ -15,7 +15,7 @@
             {% for file in files %}
                 <tr>
                     <td class="cell">
-                        <a href="file/{{ file.id }}">  {{ file.name }}</a>
+                        <a href="{{ file.getFilePageLink() }}">  {{ file.name }}</a>
                     </td>
                     <td class="cell">
                         {{ file.size }}
@@ -24,7 +24,7 @@
                         {{ file.uploadtime }}
                     </td>
                     <td class="cell">
-                        <a href="/download/{{ file.id }}" class="btn btn-xs btn-success leftmargin"> Download </a>
+                        <a href="{{ file.getDownloadLink() }}" class="btn btn-xs btn-success leftmargin"> Download </a>
                     </td>
                 </tr>
             {% endfor %}
