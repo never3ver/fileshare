@@ -107,7 +107,6 @@ $app->get('/file/{id}', function (Request $request, Response $response, $args) {
 
     if (file_exists(Helper::getFilePath($file->getTmpName()))) {
         $fileInfo = new FileInfo($file);
-        $azaza = var_dump(apache_get_modules());
         $response = $this->view->render($response, 'file.html.twig', ['file' => $file, 'fileInfo' => $fileInfo]);
         return $response;
     } else {
