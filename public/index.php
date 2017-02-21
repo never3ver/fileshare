@@ -107,6 +107,7 @@ $app->get('/file/{id}', function (Request $request, Response $response, $args) {
 
     if (file_exists(Helper::getFilePath($file->getTmpName()))) {
         $fileInfo = new FileInfo($file);
+        $azaza = var_dump(apache_get_modules());
         $response = $this->view->render($response, 'file.html.twig', ['file' => $file, 'fileInfo' => $fileInfo]);
         return $response;
     } else {
@@ -121,17 +122,17 @@ $app->get('/download/{id}/{name}', function (Request $request, Response $respons
     $path = Helper::getFilePath($file->getTmpName());
 
     if (is_readable($path)) {
-        if (in_array('xmod_xsendfile', apache_get_modules())) {
+        if (in_array('mod_xsendfile', apache_get_modules())) {
             //download using xsendfile apache module:
             $response = $response->withHeader('X-SendFile', $path);
-            $response = $response->withHeader('Content-Type', $file->getType());
             $response = $response->withHeader('Content-Description', 'File Transfer');
+            $response = $response->withHeader('Content-Disposition', 'attachment');
             return $response;
         } else {
             //universal way to download using php:
             $fh = fopen($path, 'rb');
             $stream = new \Slim\Http\Stream($fh); // create a new stream instance for the response body
-            $response = $response->withHeader('Content-Type', $file->getType());
+            $response = $response->withHeader('Content-Type', 'application/octet-stream');
             $response = $response->withHeader('Content-Description', 'File Transfer');
             $response = $response->withHeader('Content-Disposition', 'attachment');
             $response = $response->withHeader('Content-Transfer-Encoding', 'binary');

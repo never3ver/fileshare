@@ -29,4 +29,9 @@ class Helper {
         return '../files/preview/' . $tmpName;
     }
 
+    public static function getDownloadPath($tmpName) {
+//        return '/home/a13x/Dropbox/netbeans/fileshare/public/files' . $tmpName;
+        return dirname(__DIR__) . '/public/files' . "$tmpName";
+    }
+
 }
