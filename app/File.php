@@ -98,8 +98,12 @@ class File {
         return 'file/' . $this->id;
     }
 
-    public function getDownloadLink() {
-        return '../download/' . $this->id;
+    public function getFileUrl($id, $name) {
+        $regexp = "/['\".,-]/ui";
+        $name = preg_replace($regexp, '_', $name);
+        $name = preg_replace("/ /", '_', $name);
+        $name = preg_replace("/_+/", '_', $name);
+        return "/download/{$id}/{$name}";
     }
 
 }

@@ -114,8 +114,9 @@ $app->get('/file/{id}', function (Request $request, Response $response, $args) {
     }
 })->setName('file');
 
-$app->get('/download/{id}', function (Request $request, Response $response, $args) {
+$app->get('/download/{id}/{name}', function (Request $request, Response $response, $args) {
     $id = (int) $args['id'];
+    $name = $args['name'];
     $file = $this->FileDataGateway->getFile($id);
     $path = Helper::getFilePath($file->getTmpName());
 
@@ -124,7 +125,7 @@ $app->get('/download/{id}', function (Request $request, Response $response, $arg
             //download using xsendfile apache module:
             $response = $response->withHeader('X-SendFile', $path);
             $response = $response->withHeader('Content-Type', $file->getType());
-            $response = $response->withHeader('Content-Disposition', 'attachment; filename=' . $file->getName());
+            $response = $response->withHeader('Content-Description', 'File Transfer');
             return $response;
         } else {
             //universal way to download using php:
@@ -132,7 +133,7 @@ $app->get('/download/{id}', function (Request $request, Response $response, $arg
             $stream = new \Slim\Http\Stream($fh); // create a new stream instance for the response body
             $response = $response->withHeader('Content-Type', $file->getType());
             $response = $response->withHeader('Content-Description', 'File Transfer');
-            $response = $response->withHeader('Content-Disposition', 'attachment; filename=' . $file->getName());
+            $response = $response->withHeader('Content-Disposition', 'attachment');
             $response = $response->withHeader('Content-Transfer-Encoding', 'binary');
             $response = $response->withHeader('Expires', '0');
             $response = $response->withHeader('Cache-Control', 'must-revalidate');

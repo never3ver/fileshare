@@ -24,7 +24,8 @@
                         {{ file.getUploadTime() }}
                     </td>
                     <td class="cell">
-                        <a href="{{ file.getDownloadLink() }}" class="btn btn-xs btn-success leftmargin"> Download </a>
+                        {#<a href="{{ file.getDownloadLink() }}" class="btn btn-xs btn-success leftmargin"> Download </a>#}
+                        <a href="{{ file.getFileUrl(file.id, file.name) }}" class="btn btn-xs btn-success leftmargin"> Download </a>
                     </td>
                 </tr>
             {% endfor %}
