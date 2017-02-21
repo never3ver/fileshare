@@ -99,9 +99,6 @@ class File {
     }
 
     public function getFileUrl($id, $name) {
-//        $name = preg_replace("/['\".,-]/ui", '_', $name);
-//        $name = preg_replace("/ /", '_', $name);
-//        $name = preg_replace("/_+/", '_', $name);
         return "/download/{$id}/{$name}";
     }
 
