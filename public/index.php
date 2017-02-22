@@ -45,6 +45,11 @@ $container['sphinx'] = function ($c) {
     return $sphinx;
 };
 
+$container['helper'] = function() {
+    $helper = new Helper();
+    return $helper;
+};
+
 /* $container['notFoundHandler'] = function ($c) {
   return function ($request, $response) use ($c) {
   return $c->view->render($response, 'error.html.twig')
@@ -79,15 +84,15 @@ $app->post('/', function (Request $request, Response $response) {
         $tmpName = $datePath . $tmpName;
         $file->setTmpName($tmpName);
 
-        if (!is_dir(Helper::getFilePath('') . $datePath)) {
-            mkdir(Helper::getFilePath('') . $datePath);
+        if (!is_dir($this->helper->getFilePath('') . $datePath)) {
+            mkdir($this->helper->getFilePath('') . $datePath);
         }
 
-        $uploadedFile->moveTo(Helper::getFilePath($file->getTmpName()));
+        $uploadedFile->moveTo($this->helper->getFilePath($file->getTmpName()));
 
-        if (is_readable(Helper::getFilePath($file->getTmpName()))) {
+        if (is_readable($this->helper->getFilePath($file->getTmpName()))) {
             if ($file->isMedia()) {
-                $fileInfo = new FileInfo($file);
+                $fileInfo = new FileInfo($file, $this);
                 $json = $fileInfo->getJson();
                 $file->setJson($json);
             }
@@ -105,9 +110,10 @@ $app->get('/file/{id}', function (Request $request, Response $response, $args) {
     $id = (int) $args['id'];
     $file = $this->FileDataGateway->getFile($id);
 
-    if (file_exists(Helper::getFilePath($file->getTmpName()))) {
-        $fileInfo = new FileInfo($file);
-        $response = $this->view->render($response, 'file.html.twig', ['file' => $file, 'fileInfo' => $fileInfo]);
+    if (file_exists($this->helper->getFilePath($file->getTmpName()))) {
+        $fileInfo = new FileInfo($file, $this);
+        $helper = $this->helper;
+        $response = $this->view->render($response, 'file.html.twig', ['file' => $file, 'fileInfo' => $fileInfo, 'helper' => $helper]);
         return $response;
     } else {
         throw new \Slim\Exception\NotFoundException($request, $response);
@@ -117,7 +123,7 @@ $app->get('/file/{id}', function (Request $request, Response $response, $args) {
 $app->get('/download/{id}/{name}', function (Request $request, Response $response, $args) {
     $id = (int) $args['id'];
     $file = $this->FileDataGateway->getFile($id);
-    $path = Helper::getFilePath($file->getTmpName());
+    $path = $this->helper->getFilePath($file->getTmpName());
 
     if (is_readable($path)) {
         if (in_array('mod_xsendfile', apache_get_modules())) {
@@ -156,7 +162,8 @@ $app->get('/search', function (Request $request, Response $response, $args) {
 $app->get('/list', function (Request $request, Response $response) {
 //getting latest 100 files
     $files = $this->FileDataGateway->getAllFiles(100, 0);
-    $response = $this->view->render($response, 'list.html.twig', ['files' => $files]);
+    $helper = $this->helper;
+    $response = $this->view->render($response, 'list.html.twig', ['files' => $files, 'helper' => $helper]);
     return $response;
 })->setName('list');
 

@@ -94,12 +94,4 @@ class File {
         return FALSE;
     }
 
-    public function getFilePageUrl() {
-        return 'file/' . $this->id;
-    }
-
-    public function getFileUrl($id, $name) {
-        return "/download/{$id}/{$name}";
-    }
-
 }

@@ -2,7 +2,7 @@
 
 class Helper {
 
-    public static function generateTmpName() {
+    public function generateTmpName() {
         $result = null;
         $source = str_split('abcdefghijklmnopqrstuvwxyz'
                 . 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
@@ -13,16 +13,24 @@ class Helper {
         return $result;
     }
 
-    public static function getFilePath($tmpName) {
+    public function getFilePath($tmpName) {
         return dirname(__DIR__) . '/public/files/' . $tmpName;
     }
 
-    public static function getImagePreviewPath($tmpName) {
+    public function getImagePreviewPath($tmpName) {
         return dirname(__DIR__) . '/public/files/preview/' . $tmpName;
     }
 
-    public static function getImagePreviewUrl($tmpName) {
+    public function getImagePreviewUrl($tmpName) {
         return '../files/preview/' . $tmpName;
+    }
+
+    public function getFilePageUrl($id) {
+        return 'file/' . $id;
+    }
+
+    public function getFileUrl($id, $name) {
+        return "/download/{$id}/{$name}";
     }
 
 }

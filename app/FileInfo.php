@@ -8,12 +8,14 @@ class FileInfo {
     protected $playtime;
     protected $bitrate;
     protected $json;
+    protected $c;
 
-    public function __construct(File $file) {
+    public function __construct(File $file, \Slim\Container $c) {
         $this->file = $file;
-        $this->filePath = Helper::getFilePath($this->file->getTmpName());
+        $this->c = $c;
+        $this->filePath = $c->helper->getFilePath($this->file->getTmpName());
         if ($file->isImage()) {
-            $this->imageUrl = Helper::getFilePath($this->file->getTmpName());
+            $this->imageUrl = $c->helper->getFilePath($this->file->getTmpName());
         } elseif ($file->getJson() != '' && $this->file->isMedia()) {
             $json = json_decode($file->getJson(), true);
             $this->playtime = $json['playtime'];
@@ -55,9 +57,9 @@ class FileInfo {
 
     protected function makePreviewDir() {
         $datePath = date('Y-m-d') . '/';
-        if (!is_dir(Helper::getImagePreviewPath('') . $datePath)) {
+        if (!is_dir($this->c->helper->getImagePreviewPath('') . $datePath)) {
             $tmpName = $datePath . $this->file->getTmpName();
-            mkdir(Helper::getImagePreviewPath('') . $datePath);
+            mkdir($this->c->helper->getImagePreviewPath('') . $datePath);
         }
     }
 
@@ -84,8 +86,8 @@ class FileInfo {
                 imagesavealpha($preview, TRUE);
                 imagecopyresampled($preview, $source, 0, 0, 0, 0, $previewWidth, $previewHeight, $width, $height);
                 $this->makePreviewDir();
-                imagegif($preview, Helper::getImagePreviewPath($this->file->getTmpName()));
-                return Helper::getImagePreviewUrl($this->file->getTmpName());
+                imagegif($preview, $this->c->helper->getImagePreviewPath($this->file->getTmpName()));
+                return $this->c->helper->getImagePreviewUrl($this->file->getTmpName());
             case 'image/jpeg':
                 $source = imagecreatefromjpeg($this->filePath);
                 $preview = imagecreatetruecolor($previewWidth, $previewHeight);
@@ -93,8 +95,8 @@ class FileInfo {
                 imagesavealpha($preview, true);
                 imagecopyresampled($preview, $source, 0, 0, 0, 0, $previewWidth, $previewHeight, $width, $height);
                 $this->makePreviewDir();
-                imagejpeg($preview, Helper::getImagePreviewPath($this->file->getTmpName()));
-                return Helper::getImagePreviewUrl($this->file->getTmpName());
+                imagejpeg($preview, $this->c->helper->getImagePreviewPath($this->file->getTmpName()));
+                return $this->c->helper->getImagePreviewUrl($this->file->getTmpName());
             case 'image/png':
                 $source = imagecreatefrompng($this->filePath);
                 $transparentPreview = imagecolorallocatealpha($preview, 0, 0, 0, 127);
@@ -103,8 +105,8 @@ class FileInfo {
                 imagesavealpha($preview, TRUE);
                 imagecopyresampled($preview, $source, 0, 0, 0, 0, $previewWidth, $previewHeight, $width, $height);
                 $this->makePreviewDir();
-                imagepng($preview, Helper::getImagePreviewPath($this->file->getTmpName()));
-                return Helper::getImagePreviewUrl($this->file->getTmpName());
+                imagepng($preview, $this->c->helper->getImagePreviewPath($this->file->getTmpName()));
+                return $this->c->helper->getImagePreviewUrl($this->file->getTmpName());
         }
     }
 
