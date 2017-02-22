@@ -13,7 +13,7 @@ class FileInfo {
         $this->file = $file;
         $this->filePath = Helper::getFilePath($this->file->getTmpName());
         if ($file->isImage()) {
-            $this->imageUrl = Helper::getImageUrl($this->file->getTmpName());
+            $this->imageUrl = Helper::getFilePath($this->file->getTmpName());
         } elseif ($file->getJson() != '' && $this->file->isMedia()) {
             $json = json_decode($file->getJson(), true);
             $this->playtime = $json['playtime'];

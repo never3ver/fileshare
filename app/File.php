@@ -94,7 +94,7 @@ class File {
         return FALSE;
     }
 
-    public function getFilePageLink() {
+    public function getFilePageUrl() {
         return 'file/' . $this->id;
     }
 

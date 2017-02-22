@@ -17,7 +17,7 @@
     <div>
         {% if file.isImage() %}
             <img class="leftmargin" src="{{ fileInfo.getPreview() }}">
-        {% endif %}
-    </div>
+        </div>
+    {% endif %}
     <a href="{{ file.getFileUrl(file.id, file.name) }}" class="btn btn-success leftmargin"> Download </a>
 {% endblock %}

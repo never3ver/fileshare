@@ -116,7 +116,6 @@ $app->get('/file/{id}', function (Request $request, Response $response, $args) {
 
 $app->get('/download/{id}/{name}', function (Request $request, Response $response, $args) {
     $id = (int) $args['id'];
-    $name = $args['name'];
     $file = $this->FileDataGateway->getFile($id);
     $path = Helper::getFilePath($file->getTmpName());
 

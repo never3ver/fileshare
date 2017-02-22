@@ -13,25 +13,16 @@ class Helper {
         return $result;
     }
 
-    public static function getImageUrl($tmpName) {
-        return '../files/' . $tmpName;
-    }
-
     public static function getFilePath($tmpName) {
-        return '../public/files/' . $tmpName;
+        return dirname(__DIR__) . '/public/files/' . $tmpName;
     }
 
     public static function getImagePreviewPath($tmpName) {
-        return '../public/files/preview/' . $tmpName;
+        return dirname(__DIR__) . '/public/files/preview/' . $tmpName;
     }
 
     public static function getImagePreviewUrl($tmpName) {
         return '../files/preview/' . $tmpName;
-    }
-
-    public static function getDownloadPath($tmpName) {
-//        return '/home/a13x/Dropbox/netbeans/fileshare/public/files' . $tmpName;
-        return dirname(__DIR__) . '/public/files' . "$tmpName";
     }
 
 }
