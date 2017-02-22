@@ -36,18 +36,15 @@ $container['view'] = function ($container) {
 };
 
 $container['FileDataGateway'] = function ($c) {
-    $dataGateway = new FileDataGateway($c['db']);
-    return $dataGateway;
+    return new FileDataGateway($c['db']);
 };
 
 $container['sphinx'] = function ($c) {
-    $sphinx = new Sphinx($c['sphinxdb']);
-    return $sphinx;
+    return new Sphinx($c['sphinxdb']);
 };
 
 $container['helper'] = function() {
-    $helper = new Helper();
-    return $helper;
+    return new Helper();
 };
 
 /* $container['notFoundHandler'] = function ($c) {
