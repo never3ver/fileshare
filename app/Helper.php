@@ -26,7 +26,7 @@ class Helper {
     }
 
     public function getFilePageUrl($id) {
-        return 'file/' . $id;
+        return '/file/' . $id;
     }
 
     public function getFileUrl($id, $name) {

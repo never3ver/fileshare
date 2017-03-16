@@ -64,6 +64,9 @@ class FileInfo {
     }
 
     public function getPreview() {
+        if (is_readable($this->c->helper->getImagePreviewPath($this->file->getTmpName()))) {
+            return $this->c->helper->getImagePreviewUrl($this->file->getTmpName());
+        }
         $size = getimagesize($this->filePath);
         $width = $size[0];
         $height = $size[1];

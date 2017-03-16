@@ -31,7 +31,6 @@ $container['view'] = function ($container) {
     $view->addExtension(new \Slim\Views\TwigExtension(
             $container['router'], $container['request']->getUri()
     ));
-
     return $view;
 };
 
@@ -69,7 +68,6 @@ $app->post('/', function (Request $request, Response $response) {
         $file->setName($uploadedFile->getClientFilename());
         $file->setSize($uploadedFile->getSize());
         $file->setType($uploadedFile->getClientMediaType());
-
         $tmpName = $this->FileDataGateway->createTmpName();
 
         if ($this->FileDataGateway->isTmpNameExisting($tmpName)) {
@@ -94,6 +92,8 @@ $app->post('/', function (Request $request, Response $response) {
                 $file->setJson($json);
             }
             $this->FileDataGateway->addFile($file);
+            $id = $this->db->lastInsertId();
+            $this->sphinx->addRtIndex($id, $file->getName());
             $url = $this->router->pathFor('list');
             $response = $response->withStatus(302)->withHeader('Location', $url);
             return $response;

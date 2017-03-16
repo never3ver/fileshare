@@ -18,4 +18,28 @@ class Sphinx {
         return $files;
     }
 
+    public function addRtIndex($id, $name) {
+        $sql = "INSERT INTO rt VALUES (:id, 'temp', :name)";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindValue(":id", intval($id, 10), PDO::PARAM_INT);
+        $stmt->bindValue(":name", $name);
+        $stmt->execute();
+    }
+
+    public function searchIdInRtIndex($query) {
+        $sql = "SELECT * FROM rt WHERE MATCH (:query)";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindValue(":query", $query);
+        $stmt->execute();
+        $id = $stmt->fetchAll();
+        return $id;
+    }
+
+    public function deleteRtIndex($id) {
+        $sql = "DELETE FROM rt WHERE id = :id";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindValue(":id", intval($id, 10), PDO::PARAM_INT);
+        $stmt->execute();
+    }
+
 }
