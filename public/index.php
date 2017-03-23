@@ -69,26 +69,8 @@ $app->post('/', function (Request $request, Response $response) {
         $file->setSize($uploadedFile->getSize());
         $file->setType($uploadedFile->getClientMediaType());
 
-        $date = date('Y-m-d');
-//        $tmpName = $this->helper->generateTmpName($date, $this->gateway);
-//        $i = 0;
-//        while ($this->gateway->isTmpNameExisting($tmpName) && $i < 20) {
-//            $tmpName = $this->helper->generateTmpName();
-//        }
-//
-//        try {
-//            if ($this->gateway->isTmpNameExisting($tmpName)) {
-//                throw new Exception('Unable to create name of file');
-//            }
-//        } catch (Exception $e) {
-//            echo $e->getMessage();
-//        }
-
         $tmpName = $this->helper->createTmpName($this->gateway);
-
         $file->setTmpName($tmpName);
-//        $this->helper->createDir($date);
-
         $uploadedFile->moveTo($this->helper->getFilePath($file->getTmpName()));
 
         if (is_readable($this->helper->getFilePath($file->getTmpName()))) {
