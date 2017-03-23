@@ -2,7 +2,7 @@
 
 class Helper {
 
-    public function generateTmpName($date) {
+    protected function generateTmpName($date) {
         $result = null;
         $source = str_split('abcdefghijklmnopqrstuvwxyz'
                 . 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
@@ -54,7 +54,7 @@ class Helper {
         return "/download/{$id}/{$name}";
     }
 
-    public function createDir($date) {
+    protected function createDir($date) {
         if (!is_dir($this->getFilePath() . $date . '/')) {
             mkdir($this->getFilePath() . $date . '/');
         }
