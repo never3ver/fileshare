@@ -8,12 +8,14 @@ class FileInfo {
     protected $playtime;
     protected $bitrate;
     protected $metadata;
+    protected $mimeType;
     protected $c;
 
     public function __construct(File $file, \Slim\Container $c) {
         $this->file = $file;
         $this->c = $c;
         $this->filePath = $c->helper->getFilePath($this->file->getTmpName());
+        $this->mimeType = $this->fillMimeType();
         if ($file->isImage()) {
             $this->imageUrl = $c->helper->getFilePath($this->file->getTmpName());
         } elseif ($file->getMetadata() != '' && $this->file->isMedia()) {
@@ -35,6 +37,12 @@ class FileInfo {
         $this->metadata = $metadata;
     }
 
+    protected function fillMimeType() {
+        $getID3 = new getID3();
+        $properties = $getID3->analyze($this->filePath);
+        $this->mimeType = $properties['mime_type'];
+    }
+
     public function getPlaytime() {
         return $this->playtime;
     }
@@ -53,6 +61,10 @@ class FileInfo {
 
     public function getMetadata() {
         return $this->metadata;
+    }
+
+    public function getMimeType() {
+        return $this->mimeType;
     }
 
     protected function makePreviewDir() {

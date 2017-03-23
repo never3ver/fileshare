@@ -67,18 +67,20 @@ $app->post('/', function (Request $request, Response $response) {
         $uploadedFile = $files['uploadfile'];
         $file->setName($uploadedFile->getClientFilename());
         $file->setSize($uploadedFile->getSize());
-        $file->setType($uploadedFile->getClientMediaType());
+//        $file->setType($uploadedFile->getClientMediaType());
 
         $tmpName = $this->helper->createTmpName($this->gateway);
         $file->setTmpName($tmpName);
         $uploadedFile->moveTo($this->helper->getFilePath($file->getTmpName()));
 
         if (is_readable($this->helper->getFilePath($file->getTmpName()))) {
+            $fileInfo = new FileInfo($file, $this);
             if ($file->isMedia()) {
-                $fileInfo = new FileInfo($file, $this);
                 $metadata = $fileInfo->getMetadata();
                 $file->setMetadata($metadata);
             }
+            $mimeType = $fileInfo->getMimeType();
+            $file->setType($mimeType);
             $this->gateway->addFile($file);
             $id = $this->db->lastInsertId();
             $this->sphinx->addRtIndex($id, $file->getName());
