@@ -76,8 +76,8 @@ $app->post('/', function (Request $request, Response $response) {
         if (is_readable($this->helper->getFilePath($file->getTmpName()))) {
             if ($file->isMedia()) {
                 $fileInfo = new FileInfo($file, $this);
-                $json = $fileInfo->getJson();
-                $file->setJson($json);
+                $metadata = $fileInfo->getMetadata();
+                $file->setMetadata($metadata);
             }
             $this->gateway->addFile($file);
             $id = $this->db->lastInsertId();
