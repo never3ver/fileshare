@@ -14,6 +14,7 @@ class Sphinx {
         $stmt = $this->pdo->prepare($sql);
         $stmt->bindValue(":query", $query);
         $stmt->execute();
+        $stmt->setFetchMode(PDO::FETCH_CLASS, 'File');
         $files = $stmt->fetchAll();
         return $files;
     }

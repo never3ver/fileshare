@@ -9,8 +9,12 @@ function recurse_copy($source, $destination) {
                 if (is_dir($source . '/' . $file)) {
                     recurse_copy($source . '/' . $file, $destination . '/' . $file);
                 } else {
-                    if (!copy($source . '/' . $file, $destination . '/' . $file)) {
-                        echo "failed to copy $file";
+                    try {
+                        if (!copy($source . '/' . $file, $destination . '/' . $file)) {
+                            throw new Exception("Failed to copy $file");
+                        }
+                    } catch (Exception $e) {
+                        echo $e->getMessage();
                     }
                 }
             }

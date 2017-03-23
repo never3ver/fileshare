@@ -8,7 +8,7 @@ class File {
     protected $size;
     protected $uploadTime;
     protected $type;
-    protected $json;
+    protected $metadata;
 
     public function getId() {
         return $this->id;
@@ -38,8 +38,8 @@ class File {
         return $this->type;
     }
 
-    public function getJson() {
-        return $this->json;
+    public function getMetadata() {
+        return $this->metadata;
     }
 
     public function setName($name) {
@@ -58,8 +58,8 @@ class File {
         $this->type = $type;
     }
 
-    public function setJson($json) {
-        $this->json = $json;
+    public function setMetadata($metadata) {
+        $this->metadata = $metadata;
     }
 
     public function isImage() {

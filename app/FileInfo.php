@@ -7,7 +7,7 @@ class FileInfo {
     protected $filePath;
     protected $playtime;
     protected $bitrate;
-    protected $json;
+    protected $metadata;
     protected $c;
 
     public function __construct(File $file, \Slim\Container $c) {
@@ -16,23 +16,23 @@ class FileInfo {
         $this->filePath = $c->helper->getFilePath($this->file->getTmpName());
         if ($file->isImage()) {
             $this->imageUrl = $c->helper->getFilePath($this->file->getTmpName());
-        } elseif ($file->getJson() != '' && $this->file->isMedia()) {
-            $json = json_decode($file->getJson(), true);
-            $this->playtime = $json['playtime'];
-            $this->bitrate = $json['bitrate'];
-        } elseif ($file->isMedia() && $file->getJson() == '') {
-            $this->createJson();
+        } elseif ($file->getMetadata() != '' && $this->file->isMedia()) {
+            $metadata = json_decode($file->getMetadata(), true);
+            $this->playtime = $metadata['playtime'];
+            $this->bitrate = $metadata['bitrate'];
+        } elseif ($file->isMedia() && $file->getMetadata() == '') {
+            $this->createMetadata();
         }
     }
 
-    public function createJson() {
+    protected function createMetadata() {
         $getID3 = new getID3();
         $properties = $getID3->analyze($this->filePath);
         $this->playtime = $properties['playtime_string'];
         $this->bitrate = round($properties['bitrate'] / 1024, 2);
-        $json = ['playtime' => $this->playtime, 'bitrate' => $this->bitrate];
-        $json = json_encode($json);
-        $this->json = $json;
+        $metadata = ['playtime' => $this->playtime, 'bitrate' => $this->bitrate];
+        $metadata = json_encode($metadata);
+        $this->metadata = $metadata;
     }
 
     public function getPlaytime() {
@@ -51,8 +51,8 @@ class FileInfo {
         return $this->filePath;
     }
 
-    public function getJson() {
-        return $this->json;
+    public function getMetadata() {
+        return $this->metadata;
     }
 
     protected function makePreviewDir() {

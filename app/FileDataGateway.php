@@ -9,9 +9,9 @@ class FileDataGateway {
     }
 
     public function addFile(File $file) {
-        if ($file->getJson() != '') {
-            $sql = "INSERT INTO fileshare (`name`, `tmpname`, `size`, `type`, `json`)"
-                    . " VALUES (:name, :tmpname, :size, :type, :json)";
+        if ($file->getMetadata() != '') {
+            $sql = "INSERT INTO fileshare (`name`, `tmpname`, `size`, `type`, `metadata`)"
+                    . " VALUES (:name, :tmpname, :size, :type, :metadata)";
         } else {
             $sql = "INSERT INTO fileshare (`name`, `tmpname`, `size`, `type`)"
                     . " VALUES (:name, :tmpname, :size, :type)";
@@ -21,8 +21,8 @@ class FileDataGateway {
         $stmt->bindValue(":tmpname", $file->getTmpName());
         $stmt->bindValue(":size", $file->getSize());
         $stmt->bindValue(":type", $file->getType());
-        if ($file->getJson() != '') {
-            $stmt->bindValue(":json", $file->getJson());
+        if ($file->getMetadata() != '') {
+            $stmt->bindValue(":json", $file->getMetadata());
         }
         $stmt->execute();
     }
@@ -64,15 +64,6 @@ class FileDataGateway {
             return TRUE;
         }
         return FALSE;
-    }
-
-    public function createTmpName() {
-        for ($i = 0; $i < 20; $i++) {
-            do {
-                $tmpName = Helper::generateTmpName();
-            } while ($this->isTmpNameExisting($tmpName));
-        }
-        return $tmpName;
     }
 
     public function deleteFile($id) {

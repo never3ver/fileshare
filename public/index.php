@@ -34,7 +34,7 @@ $container['view'] = function ($container) {
     return $view;
 };
 
-$container['FileDataGateway'] = function ($c) {
+$container['gateway'] = function ($c) {
     return new FileDataGateway($c['db']);
 };
 
@@ -61,27 +61,33 @@ $app->get('/', function (Request $request, Response $response) {
 })->setName('upload');
 
 $app->post('/', function (Request $request, Response $response) {
-    if ($_FILES) {
+    if (is_array($request->getUploadedFiles())) {
         $file = new File();
         $files = $request->getUploadedFiles();
         $uploadedFile = $files['uploadfile'];
         $file->setName($uploadedFile->getClientFilename());
         $file->setSize($uploadedFile->getSize());
         $file->setType($uploadedFile->getClientMediaType());
-        $tmpName = $this->FileDataGateway->createTmpName();
 
-        if ($this->FileDataGateway->isTmpNameExisting($tmpName)) {
-            $response = $this->view->render($response, 'error.html.twig');
-            return $response;
-        }
+        $date = date('Y-m-d');
+//        $tmpName = $this->helper->generateTmpName($date, $this->gateway);
+//        $i = 0;
+//        while ($this->gateway->isTmpNameExisting($tmpName) && $i < 20) {
+//            $tmpName = $this->helper->generateTmpName();
+//        }
+//
+//        try {
+//            if ($this->gateway->isTmpNameExisting($tmpName)) {
+//                throw new Exception('Unable to create name of file');
+//            }
+//        } catch (Exception $e) {
+//            echo $e->getMessage();
+//        }
 
-        $datePath = date('Y-m-d') . '/';
-        $tmpName = $datePath . $tmpName;
+        $tmpName = $this->helper->createTmpName($this->gateway);
+
         $file->setTmpName($tmpName);
-
-        if (!is_dir($this->helper->getFilePath('') . $datePath)) {
-            mkdir($this->helper->getFilePath('') . $datePath);
-        }
+//        $this->helper->createDir($date);
 
         $uploadedFile->moveTo($this->helper->getFilePath($file->getTmpName()));
 
@@ -91,7 +97,7 @@ $app->post('/', function (Request $request, Response $response) {
                 $json = $fileInfo->getJson();
                 $file->setJson($json);
             }
-            $this->FileDataGateway->addFile($file);
+            $this->gateway->addFile($file);
             $id = $this->db->lastInsertId();
             $this->sphinx->addRtIndex($id, $file->getName());
             $url = $this->router->pathFor('list');
@@ -105,7 +111,7 @@ $app->post('/', function (Request $request, Response $response) {
 
 $app->get('/file/{id}', function (Request $request, Response $response, $args) {
     $id = (int) $args['id'];
-    $file = $this->FileDataGateway->getFile($id);
+    $file = $this->gateway->getFile($id);
 
     if (file_exists($this->helper->getFilePath($file->getTmpName()))) {
         $fileInfo = new FileInfo($file, $this);
@@ -119,7 +125,7 @@ $app->get('/file/{id}', function (Request $request, Response $response, $args) {
 
 $app->get('/download/{id}/{name}', function (Request $request, Response $response, $args) {
     $id = (int) $args['id'];
-    $file = $this->FileDataGateway->getFile($id);
+    $file = $this->gateway->getFile($id);
     $path = $this->helper->getFilePath($file->getTmpName());
 
     if (is_readable($path)) {
@@ -151,16 +157,21 @@ $app->get('/download/{id}/{name}', function (Request $request, Response $respons
 
 $app->get('/search', function (Request $request, Response $response, $args) {
     $query = $request->getQueryParam('query');
-    $files = $this->sphinx->searchBySphinx($query);
-    $response = $this->view->render($response, 'search.html.twig', ['files' => $files, 'query' => $query]);
+    $result = $this->sphinx->searchBySphinx($query);
+    $files = [];
+    foreach ($result as $value) {
+        $files[] = $this->gateway->getFile($value->getId());
+    }
+    $response = $this->view->render($response, 'list.html.twig', ['files' => $files,
+        'query' => $query,
+        'helper' => $this->helper]);
     return $response;
 })->setName('search');
 
 $app->get('/list', function (Request $request, Response $response) {
 //getting latest 100 files
-    $files = $this->FileDataGateway->getAllFiles(100, 0);
-    $helper = $this->helper;
-    $response = $this->view->render($response, 'list.html.twig', ['files' => $files, 'helper' => $helper]);
+    $response = $this->view->render($response, 'list.html.twig', ['files' => $this->gateway->getAllFiles(100, 0),
+        'helper' => $this->helper]);
     return $response;
 })->setName('list');
 

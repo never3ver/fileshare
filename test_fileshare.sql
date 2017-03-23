@@ -25,14 +25,14 @@ DROP TABLE IF EXISTS `fileshare`;
 CREATE TABLE `fileshare` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(45) DEFAULT NULL COMMENT 'original name of file',
-  `tmpName` varchar(56) DEFAULT NULL COMMENT 'artificially generated name of file',
+  `tmpName` varchar(56) DEFAULT NULL COMMENT 'the name under which the file is stored on disk',
   `size` int(11) NOT NULL,
-  `uploadTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `uploadTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `type` varchar(45) DEFAULT NULL COMMEMT 'mime type of file',
-  `json` varchar(128) DEFAULT NULL COMMENT 'json encoded string of media properties',
+  `metadata` varchar(128) DEFAULT NULL COMMENT 'json encoded string of media properties',
   PRIMARY KEY (`id`),
   KEY `idx_fileshare_name` (`name`),
-  KEY `idx_fileshare_tmpName` (`tmpName`),
+  UNIQUE KEY `idx_fileshare_tmpName` (`tmpName`),
   KEY `idx_fileshare_uploadTime` (`uploadTime`)
 ) ENGINE=InnoDB AUTO_INCREMENT=62 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
