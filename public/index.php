@@ -82,7 +82,7 @@ $app->post('/', function (Request $request, Response $response) {
             $this->gateway->addFile($file);
             $id = $this->db->lastInsertId();
             $this->sphinx->addRtIndex($id, $file->getName());
-            $url = $this->router->pathFor('list');
+            $url = $this->router->pathFor('file', ['id' => $id]);
             $response = $response->withStatus(302)->withHeader('Location', $url);
             return $response;
         } else {

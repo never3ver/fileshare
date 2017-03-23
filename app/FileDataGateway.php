@@ -22,7 +22,7 @@ class FileDataGateway {
         $stmt->bindValue(":size", $file->getSize());
         $stmt->bindValue(":type", $file->getType());
         if ($file->getMetadata() != '') {
-            $stmt->bindValue(":json", $file->getMetadata());
+            $stmt->bindValue(":metadata", $file->getMetadata());
         }
         $stmt->execute();
     }
