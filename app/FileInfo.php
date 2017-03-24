@@ -15,7 +15,6 @@ class FileInfo {
         $this->file = $file;
         $this->c = $c;
         $this->filePath = $c->helper->getFilePath($this->file->getTmpName());
-        $this->mimeType = $this->fillMimeType();
         if ($file->isImage()) {
             $this->imageUrl = $c->helper->getFilePath($this->file->getTmpName());
         } elseif ($file->getMetadata() != '' && $this->file->isMedia()) {
