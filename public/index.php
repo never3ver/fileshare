@@ -65,22 +65,21 @@ $app->post('/', function (Request $request, Response $response) {
         $file = new File();
         $files = $request->getUploadedFiles();
         $uploadedFile = $files['uploadfile'];
-        $file->setName($uploadedFile->getClientFilename());
-        $file->setSize($uploadedFile->getSize());
-//        $file->setType($uploadedFile->getClientMediaType());
 
         $tmpName = $this->helper->createTmpName($this->gateway);
         $file->setTmpName($tmpName);
+
+        $file->setName($uploadedFile->getClientFilename());
+        $file->setSize($uploadedFile->getSize());
+        $file->setType($uploadedFile->getClientMediaType());
+
         $uploadedFile->moveTo($this->helper->getFilePath($file->getTmpName()));
 
         if (is_readable($this->helper->getFilePath($file->getTmpName()))) {
-            $fileInfo = new FileInfo($file, $this);
             if ($file->isMedia()) {
                 $metadata = $fileInfo->getMetadata();
                 $file->setMetadata($metadata);
             }
-            $mimeType = $fileInfo->getMimeType();
-            $file->setType($mimeType);
             $this->gateway->addFile($file);
             $id = $this->db->lastInsertId();
             $this->sphinx->addRtIndex($id, $file->getName());
@@ -88,7 +87,9 @@ $app->post('/', function (Request $request, Response $response) {
             $response = $response->withStatus(302)->withHeader('Location', $url);
             return $response;
         } else {
-            throw new \Slim\Exception\NotFoundException($request, $response);
+//            throw new \Slim\Exception\NotFoundException($request, $response);
+            $response = $response->withStatus(500)->withHeader('Content-Type', 'text/html');
+            $response = $this->view->render($response, 'error.html.twig', ['message' => '500 Internal Server Error']);
         }
     }
 });
@@ -96,11 +97,12 @@ $app->post('/', function (Request $request, Response $response) {
 $app->get('/file/{id}', function (Request $request, Response $response, $args) {
     $id = (int) $args['id'];
     $file = $this->gateway->getFile($id);
-
     if (file_exists($this->helper->getFilePath($file->getTmpName()))) {
         $fileInfo = new FileInfo($file, $this);
         $helper = $this->helper;
-        $response = $this->view->render($response, 'file.html.twig', ['file' => $file, 'fileInfo' => $fileInfo, 'helper' => $helper]);
+        $response = $this->view->render($response, 'file.html.twig', ['file' => $file,
+            'fileInfo' => $fileInfo,
+            'helper' => $helper]);
         return $response;
     } else {
         throw new \Slim\Exception\NotFoundException($request, $response);
@@ -109,34 +111,13 @@ $app->get('/file/{id}', function (Request $request, Response $response, $args) {
 
 $app->get('/download/{id}/{name}', function (Request $request, Response $response, $args) {
     $id = (int) $args['id'];
+    if (!$this->gateway->isIdInDB($id)) {
+        throw new Exception("There is no file with id=$id in database");
+    }
     $file = $this->gateway->getFile($id);
     $path = $this->helper->getFilePath($file->getTmpName());
-
-    if (is_readable($path)) {
-        if (in_array('mod_xsendfile', apache_get_modules())) {
-            //download using xsendfile apache module:
-            $response = $response->withHeader('X-SendFile', $path);
-            $response = $response->withHeader('Content-Description', 'File Transfer');
-            $response = $response->withHeader('Content-Disposition', 'attachment');
-            return $response;
-        } else {
-            //universal way to download using php:
-            $fh = fopen($path, 'rb');
-            $stream = new \Slim\Http\Stream($fh); // create a new stream instance for the response body
-            $response = $response->withHeader('Content-Type', 'application/octet-stream');
-            $response = $response->withHeader('Content-Description', 'File Transfer');
-            $response = $response->withHeader('Content-Disposition', 'attachment');
-            $response = $response->withHeader('Content-Transfer-Encoding', 'binary');
-            $response = $response->withHeader('Expires', '0');
-            $response = $response->withHeader('Cache-Control', 'must-revalidate');
-            $response = $response->withHeader('Pragma', 'public');
-            $response = $response->withHeader('Content-Length', $file->getSize());
-            $response = $response->withBody($stream);
-            return $response;
-        }
-    } else {
-        throw new \Slim\Exception\NotFoundException($request, $response);
-    }
+    $response = $this->helper->downloadFile($request, $response, $path, $file);
+    return $response;
 })->setName('download');
 
 $app->get('/search', function (Request $request, Response $response, $args) {

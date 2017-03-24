@@ -37,12 +37,6 @@ class FileInfo {
         $this->metadata = $metadata;
     }
 
-    protected function fillMimeType() {
-        $getID3 = new getID3();
-        $properties = $getID3->analyze($this->filePath);
-        $this->mimeType = $properties['mime_type'];
-    }
-
     public function getPlaytime() {
         return $this->playtime;
     }
@@ -120,7 +114,7 @@ class FileInfo {
                 imagesavealpha($preview, TRUE);
                 imagecopyresampled($preview, $source, 0, 0, 0, 0, $previewWidth, $previewHeight, $width, $height);
                 $this->makePreviewDir();
-                imagepng($preview, $this->c->helper->getImagePreviewPath($this->file->getTmpName()));
+                imagejpeg($preview, $this->c->helper->getImagePreviewPath($this->file->getTmpName()));
                 return $this->c->helper->getImagePreviewUrl($this->file->getTmpName());
         }
     }

@@ -18,17 +18,14 @@ class Helper {
         $date = date('Y-m-d');
         $i = 0;
         $tmpName = $this->generateTmpName($date);
+
         while ($gateway->isTmpNameExisting($tmpName) && $i < 20) {
             $tmpName = $this->generateTmpName($date);
             $i++;
         }
 
-        try {
-            if ($gateway->isTmpNameExisting($tmpName)) {
-                throw new Exception('Unable to create name of file');
-            }
-        } catch (Exception $e) {
-            echo $e->getMessage();
+        if ($gateway->isTmpNameExisting($tmpName)) {
+            throw new Exception('Unable to create name of file');
         }
         $this->createDir($date);
         return $tmpName;
@@ -57,6 +54,34 @@ class Helper {
     protected function createDir($date) {
         if (!is_dir($this->getFilePath() . $date . '/')) {
             mkdir($this->getFilePath() . $date . '/');
+        }
+    }
+
+    public function downloadFile(\Slim\Http\Request $request, Slim\Http\Response $response, $path, $file) {
+        if (is_readable($path)) {
+            if (in_array('mod_xsendfile', apache_get_modules())) {
+                //download using xsendfile apache module:
+                $response = $response->withHeader('X-SendFile', $path);
+                $response = $response->withHeader('Content-Description', 'File Transfer');
+                $response = $response->withHeader('Content-Disposition', 'attachment');
+                return $response;
+            } else {
+                //universal way to download using php:
+                $fh = fopen($path, 'rb');
+                $stream = new \Slim\Http\Stream($fh); // create a new stream instance for the response body
+                $response = $response->withHeader('Content-Type', 'application/octet-stream');
+                $response = $response->withHeader('Content-Description', 'File Transfer');
+                $response = $response->withHeader('Content-Disposition', 'attachment');
+                $response = $response->withHeader('Content-Transfer-Encoding', 'binary');
+                $response = $response->withHeader('Expires', '0');
+                $response = $response->withHeader('Cache-Control', 'must-revalidate');
+                $response = $response->withHeader('Pragma', 'public');
+                $response = $response->withHeader('Content-Length', $file->getSize());
+                $response = $response->withBody($stream);
+                return $response;
+            }
+        } else {
+            throw new \Slim\Exception\NotFoundException($request, $response);
         }
     }
 

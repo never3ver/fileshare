@@ -9,22 +9,27 @@ class FileDataGateway {
     }
 
     public function addFile(File $file) {
-        if ($file->getMetadata() != '') {
-            $sql = "INSERT INTO fileshare (`name`, `tmpname`, `size`, `type`, `metadata`)"
-                    . " VALUES (:name, :tmpname, :size, :type, :metadata)";
-        } else {
-            $sql = "INSERT INTO fileshare (`name`, `tmpname`, `size`, `type`)"
-                    . " VALUES (:name, :tmpname, :size, :type)";
-        }
+        $sql = "INSERT INTO fileshare (`name`, `tmpname`, `size`, `type`, `metadata`)"
+                . " VALUES (:name, :tmpname, :size, :type, :metadata)";
         $stmt = $this->pdo->prepare($sql);
         $stmt->bindValue(":name", $file->getName());
         $stmt->bindValue(":tmpname", $file->getTmpName());
         $stmt->bindValue(":size", $file->getSize());
         $stmt->bindValue(":type", $file->getType());
-        if ($file->getMetadata() != '') {
-            $stmt->bindValue(":metadata", $file->getMetadata());
-        }
+        $stmt->bindValue(":metadata", $file->getMetadata());
         $stmt->execute();
+    }
+
+    public function isIdInDB($id) {
+        $sql = "SELECT COUNT(*) FROM fileshare WHERE id = :id";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindValue(":id", $id);
+        $stmt->execute();
+        $result = $stmt->fetchColumn();
+        if ($result > 0) {
+            return TRUE;
+        }
+        return FALSE;
     }
 
     public function getFile($id) {

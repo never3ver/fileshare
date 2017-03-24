@@ -8,7 +8,7 @@ class File {
     protected $size;
     protected $uploadTime;
     protected $type;
-    protected $metadata;
+    protected $metadata = NULL;
 
     public function getId() {
         return $this->id;
