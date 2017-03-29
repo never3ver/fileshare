@@ -57,7 +57,7 @@ class Helper {
         }
     }
 
-    public function downloadFile(\Slim\Http\Request $request, Slim\Http\Response $response, $path, $file) {
+    public function downloadFile(\Slim\Http\Request $request, Slim\Http\Response $response, $path, File $file) {
         if (is_readable($path)) {
             if (in_array('mod_xsendfile', apache_get_modules())) {
                 //download using xsendfile apache module:
